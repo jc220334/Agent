@@ -1,25 +1,22 @@
-# Agent 使用记录
 
-> 本文记录我在完成 Make & CMake Recruit 任务时使用 AI 编程助手（Agent）的过程。
-
-## 你使用了什么 Agent
+# 你使用了什么 Agent
 
 我使用了 OpenAI 的 **Codex**（桌面版应用里的 AI 编程助手，可以读写文件、执行命令、操作终端）。由于任务需要 Linux 环境，我让 Codex 通过 **WSL（Ubuntu）** 访问 `~/make-cmake-recurit` 仓库来查看和修改文件、运行构建与 git 命令。
 
-## 安装和配置过程
+# 安装和配置过程
 
 - 工具本身无需额外安装：Codex 桌面应用和 WSL 环境之前已经配置好，仓库里的 `gcc`、`make`、`cmake`（`build-essential` + `cmake`）也都已安装。
 - 过程中只做了一项"授权"配置：在 Codex 里批准它调用 WSL 命令（`wsl -e bash -lc ...`），以便它能进入 Linux 环境操作文件、跑 `make`/`cmake`/`git`。
 - 我没有把任何代码一次性交给 Agent 让它"代写"，而是在每一步自己先思考，再由 Agent 执行或解释。
 
-## 你交给了它什么任务
+# 你交给了它什么任务
 
 1. 修复 `./build/calculator` 报 `No such file or directory` 的问题。
 2. 解释并把修改提交、推送到 GitHub 仓库。
 3. 清理仓库里的临时文件（`hello*`、拼错的 `CMakeLisits.txt`）。
 4. 回答 Task 4 的三道思考题，并写入 `answers/task4.md`。
 
-## Agent 做了哪些修改
+# Agent 做了哪些修改
 
 1. **定位问题**：发现我写好的完整 CMake 内容被保存成了拼错的文件 `cmake-task/CMakeLisits.txt`，而真正的 `CMakeLists.txt` 里仍然是 TODO 注释，没有定义 `calculator` 目标，所以 CMake 配置出的项目是空的，自然没有 `build/calculator`。
 2. **修复 cmake-task**：把 `CMakeLisits.txt` 改名为 `CMakeLists.txt`，然后 `cmake -S . -B build` 重新配置、`cmake --build build` 编译，运行 `./build/calculator` 输出正确。
@@ -48,9 +45,9 @@
 
 ---
 
-# 关于 AI Agent 的五问五答
 
-## 1. Agent 为什么能够读取文件、修改代码，而普通聊天 AI 通常不能？
+
+# 1. Agent 为什么能够读取文件、修改代码，而普通聊天 AI 通常不能？
 
 核心差别不是模型更聪明，而是架构不同。两者底层都是大语言模型，但：
 
@@ -63,7 +60,7 @@
 
 所以 Agent 能改文件，是因为它"长着手"（工具）+ 有人替它"动手"（运行时），而不是模型本身会魔法。
 
-## 2. Tool 在 Agent 中起到了什么作用？
+# 2. Tool 在 Agent 中起到了什么作用？
 
 Tool 是 Agent 与真实世界之间的桥梁：
 
@@ -72,7 +69,7 @@ Tool 是 Agent 与真实世界之间的桥梁：
 - 让 Agent 可执行、可验证：写完代码立刻 `make` / `cmake --build` 验证，错了当场修。
 - 权限可控：每个工具可以单独设权限（哪些目录可写、哪些命令需审批），这是安全的基础。
 
-## 3. 为什么项目需要给 Agent 配置一份类似"员工手册"的规则？
+# 3. 为什么项目需要给 Agent 配置一份类似"员工手册"的规则？
 
 因为 Agent 相当于"新员工"，不了解项目潜规则。这类规则文件（如 AGENTS.md、README 约定）相当于入职手册：
 
@@ -83,7 +80,7 @@ Tool 是 Agent 与真实世界之间的桥梁：
 
 打个比方：系统提示词是"公司制度"，项目规则文件是"部门手册"，每次具体请求是"工单"。
 
-## 4. Agent 为什么可能"忘记"之前说过的内容？额度怎么计算？
+# 4. Agent 为什么可能"忘记"之前说过的内容？额度怎么计算？
 
 忘记的原因：
 
@@ -98,7 +95,7 @@ Tool 是 Agent 与真实世界之间的桥梁：
 - 工具输出在下一轮会变成"输入"，所以长日志很烧额度。
 - 控制方法：问题问精确、少整段塞大文件、及时把结论写进文件、减少无谓来回。
 
-## 5. 如果一个 Agent 可以随便执行任何终端命令，会有什么风险？
+# 5. 如果一个 Agent 可以随便执行任何终端命令，会有什么风险？
 
 风险很大且真实存在：
 
